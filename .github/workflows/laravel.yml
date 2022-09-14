@@ -17,18 +17,24 @@ jobs:
         php-version: '8.1'
     - uses: actions/checkout@v3    
     - name: Copy .env
-      run: php -r "file_exists('api-requirements/.env') || copy('api-requirements/.env.example', 'api-requiements/.env');"
+      working-directory: ./api-requirements
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
     - name: Install Dependencies
-      run: cd api-requirements/ && composer install --no-interaction --prefer-dist
+      working-directory: ./api-requirements
+      run: composer install --no-interaction --prefer-dist
     - name: Generate key
-      run:  cd api-requirements/ && php artisan key:generate
+      working-directory: ./api-requirements
+      run:  php artisan key:generate
     - name: Directory Permissions
+      working-directory: ./api-requirements
       run: chmod -R 777 storage bootstrap/cache
     - name: Create Database
+      working-directory: ./api-requirements
       run: |
         mkdir -p database
         touch database/database.sqlite
     - name: Execute tests
+      working-directory: ./api-requirements
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
