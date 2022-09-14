@@ -16,22 +16,20 @@ jobs:
       with:
         php-version: '8.1'
     - uses: actions/checkout@v3    
-    - name: Go to laravel directory
-      run: cd ./api-requirements
     - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      run: php -r "file_exists('api-requiements/.env') || copy('api-requiements/.env.example', 'api-requiements/.env');"
     - name: Install Dependencies
-      run: composer install --no-interaction --prefer-dist
+      run: cd api-requiements/ && composer install --no-interaction --prefer-dist
     - name: Generate key
-      run: php artisan key:generate
+      run: php ./api-requiements/artisan key:generate
     - name: Directory Permissions
-      run: chmod -R 777 storage bootstrap/cache
+      run: chmod -R 777 api-requiements/storage ./api-requiements/bootstrap/cache
     - name: Create Database
       run: |
-        mkdir -p database
-        touch database/database.sqlite
+        mkdir -p api-requiements/database
+        touch api-requiements/database/database.sqlite
     - name: Execute tests
       env:
         DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
+        DB_DATABASE: api-requiements/database/database.sqlite
       run: vendor/bin/pest
